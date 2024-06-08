@@ -1,16 +1,12 @@
-FROM ubuntu:latest AS build
+FROM openjdk:17-jdk-alpine
 
-RUN apt-get update
-RUN apt-get install openjdk-17-jdk -y
+RUN addgroup -S app && adduser -S app -G app
+USER app
+
+WORKDIR /app
+
 COPY . .
-
-RUN apt-get install maven -y
-RUN mvn clean install
-
-FROM openjdk:17-jdk-slim
 
 EXPOSE 8080
 
-COPY --from=build /target/CurriculumSpringBoot-0.0.1-SNAPSHOT.jar app.jar
-
-ENTRYPOINT [ "java", "-jar", "app.jar" ]
+CMD ["java", "-jar", "target/CurriculumSpringBoot-0.0.1-SNAPSHOT.jar"]
